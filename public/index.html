@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEXUS OS v9.0 - Unlimited Puter</title>
+  <!-- SOCKET.IO CLIENT LIBRARY -->
+  <script src="/socket.io/socket.io.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --cyan: #00f0ff; --magenta: #ff00aa; --green: #00ff88;
+      --yellow: #fbbf24; --bg: #000001; --card-bg: rgba(0, 20, 30, 0.8);
+      --border: rgba(0, 240, 255, 0.2);
+    }
+    body { font-family: 'Courier New', monospace; background: var(--bg); color: #e5e7eb; min-height: 100vh; overflow-x: hidden; }
+    
+    /* BOOT SCREEN */
+    #boot-screen { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; background: var(--bg); }
+    .boot-logo { font-size: 5rem; font-weight: bold; color: var(--cyan); text-shadow: 0 0 20px var(--cyan); margin-bottom: 0.5rem; animation: pulse 2s infinite; }
+    .boot-version { color: var(--magenta); font-size: 0.9rem; letter-spacing: 0.3em; margin-bottom: 2rem; }
+    .boot-terminal { width: 320px; height: 150px; background: rgba(0, 10, 20, 0.9); border: 1px solid var(--border); border-radius: 8px; padding: 12px; font-size: 11px; margin-bottom: 1rem; overflow: hidden; }
+    .boot-line { margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+    .boot-line.active { color: var(--cyan); }
+    .boot-line.done { color: var(--green); }
+    .boot-progress { width: 320px; height: 8px; background: rgba(0, 240, 255, 0.1); border-radius: 4px; overflow: hidden; margin-bottom: 0.5rem; }
+    .boot-progress-bar { height: 100%; background: linear-gradient(90deg, var(--cyan), var(--magenta)); width: 0%; transition: width 0.3s; box-shadow: 0 0 15px var(--cyan); }
+    .boot-percent { text-align: center; font-size: 12px; color: #6b7280; margin-bottom: 1rem; }
+    .skip-btn { padding: 8px 24px; background: transparent; border: 1px solid var(--cyan); color: var(--cyan); border-radius: 4px; cursor: pointer; opacity: 0; transition: opacity 0.5s; }
+    .skip-btn.show { opacity: 1; }
+    .hidden { display: none !important; }
+
+    /* DASHBOARD */
+    #dashboard { min-height: 100vh; }
+    #particles { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+    .grid-overlay { position: fixed; inset: 0; pointer-events: none; z-index: 1; opacity: 0.05; background-image: linear-gradient(rgba(0, 240, 255, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 240, 255, 0.1) 1px, transparent 1px); background-size: 50px 50px; }
+    
+    header { position: fixed; top: 0; left: 0; right: 0; z-index: 40; background: rgba(0, 0, 1, 0.9); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-size: 1.5rem; font-weight: bold; color: var(--cyan); text-shadow: 0 0 10px var(--cyan); cursor: pointer; }
+    .logo-badge { display: inline-block; padding: 2px 8px; background: rgba(0, 240, 255, 0.1); border: 1px solid rgba(0, 240, 255, 0.3); border-radius: 4px; font-size: 12px; color: var(--cyan); margin-left: 8px; }
+    .status-badge { display: flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 20px; font-size: 12px; }
+    .status-badge.online { background: rgba(0, 255, 136, 0.1); border: 1px solid rgba(0, 255, 136, 0.3); color: var(--green); }
+    .status-badge.standby { background: rgba(255, 170, 0, 0.1); border: 1px solid rgba(255, 170, 0, 0.3); color: #ffaa00; }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; animation: pulse 1.5s infinite; }
+    .status-badge.online .status-dot { background: var(--green); }
+    .status-badge.standby .status-dot { background: #ffaa00; }
+    
+    nav { display: flex; gap: 4px; }
+    .nav-btn { padding: 8px 12px; background: transparent; border: none; color: #9ca3af; font-family: inherit; font-size: 12px; cursor: pointer; border-radius: 8px; transition: all 0.3s; display: flex; align-items: center; gap: 6px; }
+    .nav-btn:hover { background: rgba(0, 240, 255, 0.1); }
+    .nav-btn.active { color: var(--cyan); background: rgba(0, 240, 255, 0.1); }
+    
+    main { position: relative; z-index: 2; max-width: 1200px; margin: 0 auto; padding: 100px 24px 40px; }
+    
+    /* UI COMPONENTS */
+    .hero { text-align: center; margin-bottom: 4rem; }
+    .hero h1 { font-size: clamp(2rem, 6vw, 4rem); font-weight: bold; margin-bottom: 1rem; background: linear-gradient(135deg, var(--cyan) 0%, var(--magenta) 50%, var(--cyan) 100%); background-size: 200% 200%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: gradient-shift 3s ease infinite; }
+    .hero p { font-size: 1.125rem; color: #9ca3af; max-width: 600px; margin: 0 auto 2rem; }
+    .hero-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .btn { padding: 12px 24px; border-radius: 8px; font-family: inherit; font-size: 14px; cursor: pointer; transition: all 0.3s; border: none; }
+    .btn-primary { background: linear-gradient(135deg, var(--cyan), #00a0cc); color: #000; box-shadow: 0 0 20px rgba(0, 240, 255, 0.4); }
+    .btn-primary:hover { transform: scale(1.05); }
+    .btn-secondary { background: transparent; border: 1px solid rgba(255, 0, 170, 0.5); color: var(--magenta); }
+    .section-title { font-size: 1.5rem; font-weight: bold; color: var(--cyan); text-shadow: 0 0 10px var(--cyan); margin-bottom: 2rem; text-align: center; }
+    
+    /* FEATURES & STATS */
+    .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 3rem; }
+    .feature-card { padding: 24px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; transition: all 0.3s; }
+    .feature-card:hover { transform: translateY(-8px); }
+    .feature-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+    .feature-title { font-size: 1.125rem; font-weight: bold; margin-bottom: 0.5rem; }
+    .feature-desc { font-size: 14px; color: #9ca3af; margin-bottom: 0.75rem; }
+    .feature-stat { display: inline-block; padding: 4px 8px; background: rgba(0, 240, 255, 0.1); border: 1px solid rgba(0, 240, 255, 0.2); border-radius: 4px; font-size: 12px; color: var(--cyan); }
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 3rem; }
+    .stat-card { padding: 24px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; transition: all 0.3s; cursor: pointer; }
+    .stat-card:hover { transform: scale(1.02); }
+    .stat-label { font-size: 12px; color: #9ca3af; margin-bottom: 8px; }
+    .stat-value { font-size: 1.75rem; font-weight: bold; }
+    .stat-value.cyan { color: var(--cyan); }
+    .stat-value.magenta { color: var(--magenta); }
+    .stat-value.green { color: var(--green); }
+    .stat-value.yellow { color: var(--yellow); }
+    .progress-bar { height: 4px; background: rgba(0, 240, 255, 0.1); border-radius: 2px; margin-top: 12px; overflow: hidden; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, var(--cyan), var(--magenta)); border-radius: 2px; transition: width 0.5s; }
+
+    /* CHAT UI */
+    .chat-container { display: flex; flex-direction: column; height: 70vh; background: rgba(0, 5, 10, 0.95); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+    .chat-header { padding: 16px; background: rgba(0, 240, 255, 0.1); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+    .chat-header h3 { color: var(--cyan); }
+    .chat-messages { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+    .message { max-width: 70%; padding: 10px 14px; border-radius: 12px; font-size: 14px; word-wrap: break-word; }
+    .message.my-message { align-self: flex-end; background: var(--cyan); color: #000; border-bottom-right-radius: 2px; }
+    .message.other-message { align-self: flex-start; background: rgba(255, 255, 255, 0.1); border-bottom-left-radius: 2px; }
+    .message.system-message { align-self: center; background: transparent; color: #6b7280; font-size: 12px; font-style: italic; }
+    .message-user { font-size: 11px; font-weight: bold; margin-bottom: 4px; opacity: 0.8; }
+    .media-preview { max-width: 100%; max-height: 200px; border-radius: 8px; margin-top: 8px; cursor: pointer; transition: transform 0.2s; }
+    .media-preview:hover { transform: scale(1.02); }
+    .chat-input-area { padding: 16px; background: rgba(0, 0, 0, 0.5); border-top: 1px solid var(--border); display: flex; gap: 12px; align-items: center; }
+    .chat-input { flex: 1; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border); border-radius: 8px; padding: 12px; color: var(--cyan); font-family: inherit; outline: none; }
+    .chat-input:focus { border-color: var(--cyan); }
+    .file-upload-btn { background: transparent; border: 1px solid var(--magenta); color: var(--magenta); border-radius: 8px; padding: 8px 16px; cursor: pointer; transition: all 0.3s; }
+    .file-upload-btn:hover { background: rgba(255, 0, 170, 0.1); }
+
+    footer { border-top: 1px solid var(--border); padding: 24px; text-align: center; margin-top: 3rem; }
+    footer p { font-size: 14px; color: #6b7280; }
+
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+    @keyframes gradient-shift { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: rgba(0, 10, 20, 0.5); }
+    ::-webkit-scrollbar-thumb { background: var(--cyan); border-radius: 3px; }
+    @media (max-width: 768px) { nav { display: none; } .hero h1 { font-size: 2rem; } .message { max-width: 90%; } }
+  </style>
+</head>
+<body>
+  <!-- Boot Screen -->
+  <div id="boot-screen">
+    <div class="boot-logo">NEXUS</div>
+    <div class="boot-version">UNLIMITED PUTER EDITION</div>
+    <div class="boot-terminal" id="boot-terminal"></div>
+    <div class="boot-progress"><div class="boot-progress-bar" id="boot-progress"></div></div>
+    <div class="boot-percent" id="boot-percent">0% Complete</div>
+    <button class="skip-btn" id="skip-btn" onclick="skipBoot()">[ SKIP INTRO ]</button>
+  </div>
+
+  <!-- Dashboard -->
+  <div id="dashboard" class="hidden">
+    <canvas id="particles"></canvas>
+    <div class="grid-overlay"></div>
+    
+    <header>
+      <div style="display: flex; align-items: center;">
+        <span class="logo" onclick="navigate('Dashboard')">NEXUS</span>
+        <span class="logo-badge">v9.0</span>
+        <span class="logo-badge" id="active-badge" style="display: none; background: rgba(0, 255, 136, 0.2); border-color: rgba(0, 255, 136, 0.5); color: #00ff88;">ACTIVE</span>
+      </div>
+      <nav id="nav"></nav>
+      <div class="status-badge standby" id="status-badge">
+        <span class="status-dot"></span>
+        <span id="status-text">STANDBY</span>
+      </div>
+    </header>
+    
+    <main id="main-content"></main>
+    <footer><p>© 2024 NEXUS Corporation. <span id="footer-status">System in standby mode.</span></p></footer>
+  </div>
+
+  <script>
+    // --- CONFIG ---
+    const BOOT_STAGES = [
+      { id: 'bios', label: 'BIOS Initialization', duration: 400 },
+      { id: 'net', label: 'Mesh Network Handshake', duration: 600 },
+      { id: 'chat', label: 'Quantum Chat Relay', duration: 500 },
+      { id: 'media', label: 'Media Stream Buffer', duration: 400 },
+      { id: 'ready', label: 'System Ready', duration: 200 }
+    ];
+    const NAV_SECTIONS = [
+      { id: 'Dashboard', icon: '📊' },
+      { id: 'Chat', icon: '💬' },
+      { id: 'Features', icon: '🧠' },
+      { id: 'Settings', icon: '🔧' }
+    ];
+    const FEATURES = [
+      { icon: '🧠', title: 'Sentient AI Core', desc: 'Self-evolving neural architecture.', stat: '99.9% Accuracy' },
+      { icon: '⚡', title: 'Quantum Processing', desc: 'Unprecedented performance.', stat: '10^15 ops/sec' },
+      { icon: '💬', title: 'Nexus Chat', desc: 'Real-time global communication.', stat: '0ms Latency' },
+      { icon: '🌐', title: 'Global Mesh Network', desc: 'Distributed computing worldwide.', stat: '< 1ms Ping' }
+    ];
+
+    // --- STATE ---
+    let state = {
+      systemActive: false, activeNav: 'Dashboard',
+      username: 'User_' + Math.floor(Math.random() * 9999),
+      stats: [
+        { label: 'Neural Processing', value: 94, unit: '%', color: 'cyan' },
+        { label: 'Quantum Memory', value: 12.4, unit: 'TB', color: 'magenta' },
+        { label: 'AI Sentience', value: 99.7, unit: '%', color: 'green' },
+        { label: 'Network Nodes', value: 2847, unit: '', color: 'yellow' }
+      ]
+    };
+
+    // --- SOCKET.IO SETUP ---
+    const socket = io();
+    
+    socket.on('chat message', function(msg) {
+      if (state.activeNav === 'Chat') appendMessage(msg);
+    });
+
+    socket.on('chat media', function(data) {
+      if (state.activeNav === 'Chat') appendMedia(data);
+    });
+
+    function appendMessage(msg) {
+      const container = document.getElementById('chat-messages');
+      if (!container) return;
+      const div = document.createElement('div');
+      const isMe = msg.user === state.username;
+      const isSystem = msg.type === 'system';
+      div.className = `message ${isSystem ? 'system-message' : (isMe ? 'my-message' : 'other-message')}`;
+      if (!isSystem) div.innerHTML = `<div class="message-user">${msg.user}</div>${msg.text}`;
+      else div.innerText = msg.text;
+      container.appendChild(div);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function appendMedia(data) {
+      const container = document.getElementById('chat-messages');
+      if (!container) return;
+      const div = document.createElement('div');
+      const isMe = data.user === state.username;
+      div.className = `message ${isMe ? 'my-message' : 'other-message'}`;
+      div.innerHTML = `<div class="message-user">${data.user}</div><img src="${data.file}" class="media-preview" onclick="window.open(this.src)">`;
+      container.appendChild(div);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    // --- BOOT SEQUENCE ---
+    function runBootSequence() {
+      const terminal = document.getElementById('boot-terminal');
+      const progressBar = document.getElementById('boot-progress');
+      const percentText = document.getElementById('boot-percent');
+      const skipBtn = document.getElementById('skip-btn');
+      
+      setTimeout(() => skipBtn.classList.add('show'), 800);
+      let totalDuration = BOOT_STAGES.reduce((acc, s) => acc + s.duration, 0);
+      let elapsed = 0;
+      
+      function runStage(index) {
+        if (index >= BOOT_STAGES.length) {
+          progressBar.style.width = '100%'; percentText.textContent = '100% Complete';
+          setTimeout(() => {
+            document.getElementById('boot-screen').classList.add('hidden');
+            document.getElementById('dashboard').classList.remove('hidden');
+            initParticles(); renderContent();
+          }, 400);
+          return;
+        }
+        
+        const stage = BOOT_STAGES[index];
+        const line = document.createElement('div');
+        line.className = 'boot-line active';
+        line.innerHTML = `<span>▸</span><span>${stage.label}</span><span class="pulse">...</span>`;
+        terminal.appendChild(line);
+        terminal.scrollTop = terminal.scrollHeight;
+        
+        const startTime = Date.now();
+        
+        function animate() {
+          const progress = Math.min((Date.now() - startTime) / stage.duration, 1);
+          const currentProgress = ((elapsed + (stage.duration * progress)) / totalDuration) * 100;
+          progressBar.style.width = currentProgress + '%';
+          percentText.textContent = Math.round(currentProgress) + '% Complete';
+          
+          if (progress < 1) requestAnimationFrame(animate);
+          else {
+            line.classList.remove('active'); line.classList.add('done');
+            line.querySelector('span:first-child').textContent = '✓';
+            line.querySelector('span:last-child').remove();
+            elapsed += stage.duration;
+            runStage(index + 1);
+          }
+        }
+        requestAnimationFrame(animate);
+      }
+      runStage(0);
+    }
+    
+    function skipBoot() {
+      document.getElementById('boot-screen').classList.add('hidden');
+      document.getElementById('dashboard').classList.remove('hidden');
+      initParticles(); renderContent();
+    }
+    
+    // --- PARTICLES & RENDER ---
+    function initParticles() {
+      const canvas = document.getElementById('particles');
+      const ctx = canvas.getContext('2d');
+      function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+      resize(); window.addEventListener('resize', resize);
+      const particles = [];
+      for (let i = 0; i < 50; i++) particles.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, vx: (Math.random() - 0.5) * 0.5, vy: (Math.random() - 0.5) * 0.5, size: Math.random() * 2, color: Math.random() > 0.5 ? '#00f0ff' : '#ff00aa' });
+      function animate() {
+        ctx.fillStyle = 'rgba(0, 0, 1, 0.05)'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => { p.x += p.vx; p.y += p.vy; if (p.x < 0 || p.x > canvas.width) p.vx *= -1; if (p.y < 0 || p.y > canvas.height) p.vy *= -1; ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fillStyle = p.color; ctx.fill(); });
+        requestAnimationFrame(animate);
+      } animate();
+    }
+    
+    function renderContent() { renderNav(); renderMain(); updateStatus(); }
+    function renderNav() { document.getElementById('nav').innerHTML = NAV_SECTIONS.map(s => `<button class="nav-btn ${state.activeNav === s.id ? 'active' : ''}" onclick="navigate('${s.id}')">${s.icon} ${s.id}</button>`).join(''); }
+    function navigate(id) { state.activeNav = id; renderNav(); renderMain(); }
+    
+    function renderMain() {
+      const main = document.getElementById('main-content');
+      switch (state.activeNav) {
+        case 'Dashboard': main.innerHTML = renderDashboard(); break;
+        case 'Chat': main.innerHTML = renderChat(); break;
+        case 'Features': main.innerHTML = renderFeatures(); break;
+        case 'Settings': main.innerHTML = renderSettings(); break;
+        default: main.innerHTML = renderDashboard();
+      }
+    }
+
+    function renderDashboard() {
+      return `
+        <section class="hero">
+          <h1>Welcome to NEXUS</h1>
+          <p>The Unlimited Computer. Chat, Media, and Quantum Power in one interface.</p>
+          <div class="hero-buttons">
+            <button class="btn btn-primary" onclick="initializeSystem()">Initialize System</button>
+            <button class="btn btn-secondary" onclick="navigate('Chat')">Enter Chat Room</button>
+          </div>
+        </section>
+        <h2 class="section-title">System Statistics</h2>
+        <div class="stats-grid">
+          ${state.stats.map(s => `
+            <div class="stat-card">
+              <div class="stat-label">${s.label}</div>
+              <div class="stat-value ${s.color}">${typeof s.value === 'number' && s.value < 100 ? s.value.toFixed(1) : Math.round(s.value).toLocaleString()}${s.unit}</div>
+              <div class="progress-bar"><div class="progress-fill" style="width: ${typeof s.value === 'number' && s.value < 100 ? s.value : 100}%"></div></div>
+            </div>
+          `).join('')}
+        </div>`;
+    }
+
+    function renderFeatures() {
+      return `
+        <h2 class="section-title">Core Capabilities</h2>
+        <div class="features-grid">
+          ${FEATURES.map(f => `
+            <div class="feature-card">
+              <div class="feature-icon">${f.icon}</div>
+              <h3 class="feature-title">${f.title}</h3>
+              <p class="feature-desc">${f.desc}</p>
+              <span class="feature-stat">${f.stat}</span>
+            </div>
+          `).join('')}
+        </div>`;
+    }
+
+    function renderChat() {
+      return `
+        <h2 class="section-title">Global Nexus Chat</h2>
+        <div class="chat-container">
+          <div class="chat-header">
+            <h3>Channel: #Global</h3>
+            <span style="color:var(--green); font-size:12px;">Connected as ${state.username}</span>
+          </div>
+          <div class="chat-messages" id="chat-messages">
+            <div class="message system-message">Welcome to the Nexus Network. All transmissions are quantum-encrypted.</div>
+          </div>
+          <div class="chat-input-area">
+            <input type="file" id="file-input" accept="image/*" style="display:none" onchange="handleFileUpload(this)">
+            <button class="file-upload-btn" onclick="document.getElementById('file-input').click()">📎 Media</button>
+            <input type="text" id="chat-input" class="chat-input" placeholder="Type your message..." onkeydown="handleChatKey(event)">
+            <button class="btn btn-primary" style="padding:8px 16px" onclick="sendChat()">Send</button>
+          </div>
+        </div>`;
+    }
+
+    function renderSettings() {
+      return `
+        <h2 class="section-title">System Settings</h2>
+        <div class="settings-card" style="max-width: 500px; margin: 0 auto; padding: 24px; background: var(--card-bg); border-radius: 12px; border: 1px solid var(--border);">
+          <h3 style="color: var(--cyan); margin-bottom: 1rem;">User Profile</h3>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span class="setting-label" style="color: #9ca3af;">Username</span>
+            <input type="text" value="${state.username}" onchange="state.username=this.value" style="background:rgba(0,0,0,0.5); border:1px solid var(--border); color:var(--cyan); padding:8px; border-radius:4px; font-family: inherit;">
+          </div>
+        </div>`;
+    }
+
+    // --- CHAT LOGIC ---
+    function handleChatKey(e) { if (e.key === 'Enter') sendChat(); }
+    function sendChat() {
+      const input = document.getElementById('chat-input');
+      if (!input || !input.value.trim()) return;
+      socket.emit('chat message', { user: state.username, text: input.value });
+      input.value = '';
+    }
+    function handleFileUpload(input) {
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          socket.emit('chat media', { user: state.username, file: e.target.result });
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+
+    function initializeSystem() {
+      state.systemActive = true;
+      updateStatus();
+      renderMain();
+      setInterval(() => {
+        state.stats = state.stats.map(s => ({...s, value: s.label === 'Network Nodes' ? Math.floor(s.value + (Math.random()*10-5)) : Math.min(100, Math.max(0, s.value + (Math.random()*2-1))) }));
+        if (state.activeNav === 'Dashboard') renderMain();
+      }, 1000);
+    }
+
+    function updateStatus() {
+      const badge = document.getElementById('status-badge');
+      const statusText = document.getElementById('status-text');
+      const activeBadge = document.getElementById('active-badge');
+      if (state.systemActive) {
+        badge.className = 'status-badge online';
+        statusText.textContent = 'ONLINE';
+        activeBadge.style.display = 'inline-block';
+      }
+    }
+
+    // Start
+    runBootSequence();
+  </script>
+</body>
+</html>
