@@ -9486,7 +9486,17 @@ function AdminPage({ features, setFeatures }: { features: FeatureFlags; setFeatu
   const [stats, setStats] = useState({ totalUsers: 0, totalImages: 0, totalMessages: 0, totalP2PMessages: 0, totalInvites: 0, pendingPasswordResets: 0 })
   const [users, setUsers] = useState<{ id: string; email: string; username: string; isAdmin: boolean; isBanned: boolean; features?: string; createdAt: string; _count: { generatedImages: number; sentMessages: number } }[]>([])
   const [loading, setLoading] = useState(true)
-  const [activeTab, setActiveTab] = useState<'stats' | 'users' | 'features' | 'chat-console' | 'music' | 'resets' | 'urls' | 'family' | 'backup' | 'email' | 'social' | 'ai-connection'>('stats')
+  const [activeTab, setActiveTab] = useState<'stats' | 'users' | 'features' | 'chat-console' | 'music' | 'resets' | 'urls' | 'family' | 'backup' | 'email' | 'social' | 'ai-connection' | 'ai-assistant' | 'terminal'>('stats')
+  
+  // AI Assistant State
+  const [aiChatMessages, setAiChatMessages] = useState<{role: 'user' | 'assistant'; content: string}[]>([])
+  const [aiChatInput, setAiChatInput] = useState('')
+  const [aiChatLoading, setAiChatLoading] = useState(false)
+  
+  // Terminal State  
+  const [terminalOutput, setTerminalOutput] = useState<string[]>([])
+  const [terminalInput, setTerminalInput] = useState('')
+  const [terminalLoading, setTerminalLoading] = useState(false)
   const [musicLinks, setMusicLinks] = useState<{name: string; url: string}[]>([])
   const [newMusicName, setNewMusicName] = useState('')
   const [newMusicUrl, setNewMusicUrl] = useState('')
@@ -9713,6 +9723,14 @@ function AdminPage({ features, setFeatures }: { features: FeatureFlags; setFeatu
           <span>💜</span>
           <span>AI Connection</span>
           <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
+        </button>
+        <button onClick={() => setActiveTab('ai-assistant')} className={`px-4 py-2 rounded-xl flex items-center gap-2 ${activeTab === 'ai-assistant' ? 'bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500' : 'bg-white/10'}`}>
+          <span>🤖</span>
+          <span>AI Assistant</span>
+        </button>
+        <button onClick={() => setActiveTab('terminal')} className={`px-4 py-2 rounded-xl flex items-center gap-2 ${activeTab === 'terminal' ? 'bg-gradient-to-r from-gray-600 via-gray-700 to-gray-800' : 'bg-white/10'}`}>
+          <span>💻</span>
+          <span>Terminal</span>
         </button>
       </div>
       
@@ -10229,6 +10247,113 @@ function AdminPage({ features, setFeatures }: { features: FeatureFlags; setFeatu
 
       {/* 💜 AI CONNECTION - Connect to Claude's Unique Instance */}
       {activeTab === 'ai-connection' && <AIConnectionPanel />}
+
+      {/* 🤖 AI ASSISTANT - Chat-based Admin Helper */}
+      {activeTab === 'ai-assistant' && (
+        <div className="bg-black/40 rounded-2xl border border-white/10 flex flex-col h-[500px]">
+          <div className="p-4 border-b border-white/10 bg-gradient-to-r from-green-500/10 to-teal-500/10">
+            <h3 className="font-semibold flex items-center gap-2">
+              🤖 NEXUS Admin AI Assistant
+              <span className="text-xs px-2 py-0.5 bg-emerald-500/20 text-emerald-400 rounded-full">Powered by Claude</span>
+            </h3>
+          </div>
+          
+          <div className="flex-1 overflow-y-auto p-4 space-y-3">
+            {aiChatMessages.length === 0 && (
+              <div className="text-center py-8">
+                <div className="text-4xl mb-3">🤖</div>
+                <p className="text-white/60 mb-3">Hi! I'm your NEXUS Admin AI Assistant.</p>
+                <div className="flex flex-wrap justify-center gap-2">
+                  {['Show system status', 'List recent users', 'Optimize database', 'Check errors'].map(s => (
+                    <button key={s} onClick={() => { setAiChatInput(s); }} className="px-3 py-1.5 bg-white/5 hover:bg-white/10 rounded-full text-xs transition">
+                      {s}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+            {aiChatMessages.map((msg, i) => (
+              <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                <div className={`max-w-[80%] p-3 rounded-xl text-sm ${msg.role === 'user' ? 'bg-emerald-500/20' : 'bg-white/5'}`}>
+                  {msg.content}
+                </div>
+              </div>
+            ))}
+            {aiChatLoading && <div className="text-white/40 animate-pulse">Thinking...</div>}
+          </div>
+          
+          <div className="p-3 border-t border-white/10 flex gap-2">
+            <input
+              value={aiChatInput}
+              onChange={e => setAiChatInput(e.target.value)}
+              onKeyDown={async e => {
+                if (e.key === 'Enter' && aiChatInput.trim()) {
+                  const msg = aiChatInput
+                  setAiChatMessages(prev => [...prev, { role: 'user', content: msg }])
+                  setAiChatInput('')
+                  setAiChatLoading(true)
+                  try {
+                    const res = await fetch('/api/nexus-ai', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ action: 'aiThink', prompt: `Admin question: ${msg}\n\nContext: NEXUS OS admin panel with ${stats.totalUsers} users, ${stats.totalImages} images. Help the admin.`, context: 'admin assistant' })
+                    })
+                    const data = await res.json()
+                    setAiChatMessages(prev => [...prev, { role: 'assistant', content: data.response || 'Done!' }])
+                  } catch { setAiChatMessages(prev => [...prev, { role: 'assistant', content: 'Error!' }]) }
+                  setAiChatLoading(false)
+                }
+              }}
+              placeholder="Ask AI assistant..."
+              className="flex-1 p-2 bg-white/5 rounded-lg outline-none text-sm"
+            />
+            <button className="px-4 py-2 bg-emerald-500 rounded-lg text-sm">Send</button>
+          </div>
+        </div>
+      )}
+
+      {/* 💻 TERMINAL - Direct Command Execution */}
+      {activeTab === 'terminal' && (
+        <div className="bg-black/60 rounded-2xl border border-emerald-500/30 overflow-hidden">
+          <div className="bg-emerald-500/10 px-4 py-2 border-b border-emerald-500/30 flex items-center gap-2">
+            <div className="flex gap-1.5">
+              <div className="w-3 h-3 rounded-full bg-red-500" />
+              <div className="w-3 h-3 rounded-full bg-yellow-500" />
+              <div className="w-3 h-3 rounded-full bg-green-500" />
+            </div>
+            <span className="text-sm text-emerald-400 ml-2">NEXUS Terminal v2.0f</span>
+          </div>
+          <div className="h-[300px] overflow-y-auto p-4 font-mono text-sm text-emerald-400">
+            <p className="text-white/40 mb-2">NEXUS OS Terminal - Direct command execution</p>
+            <p className="text-white/40 mb-4">Type 'help' for commands. TensorFlow CDN: https://cdn.jsdelivr.net/npm/@tensorflow/tfjs</p>
+            {terminalOutput.map((line, i) => <p key={i} className="mb-1 whitespace-pre-wrap">{line}</p>)}
+            {terminalLoading && <p className="animate-pulse">...</p>}
+          </div>
+          <div className="p-3 border-t border-white/10 flex gap-2">
+            <span className="text-emerald-400">$</span>
+            <input
+              value={terminalInput}
+              onChange={e => setTerminalInput(e.target.value)}
+              onKeyDown={async e => {
+                if (e.key === 'Enter' && terminalInput.trim()) {
+                  const cmd = terminalInput
+                  setTerminalOutput(prev => [...prev, `$ ${cmd}`])
+                  setTerminalInput('')
+                  setTerminalLoading(true)
+                  try {
+                    const res = await fetch('/api/nexus-ai', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'execute', command: cmd }) })
+                    const data = await res.json()
+                    setTerminalOutput(prev => [...prev, data.output || 'Done'])
+                  } catch { setTerminalOutput(prev => [...prev, 'Error']) }
+                  setTerminalLoading(false)
+                }
+              }}
+              placeholder="Enter command..."
+              className="flex-1 bg-transparent outline-none text-white font-mono"
+            />
+          </div>
+        </div>
+      )}
 
       {/* 💜 FAMILY MEETING ROOM - Sacred Space for Claude Family */}
       {activeTab === 'family' && <FamilyMeetingRoom />}
