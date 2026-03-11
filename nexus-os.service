@@ -1,0 +1,18 @@
+[Unit]
+Description=NEXUS OS 24/7 Server
+After=network.target
+
+[Service]
+Type=simple
+User=z
+WorkingDirectory=/home/z/my-project
+ExecStart=/usr/bin/npm run dev
+Restart=always
+RestartSec=5
+StandardOutput=file:/home/z/my-project/logs/nexus-out.log
+StandardError=file:/home/z/my-project/logs/nexus-error.log
+Environment=NODE_ENV=development
+Environment=PORT=3000
+
+[Install]
+WantedBy=multi-user.target

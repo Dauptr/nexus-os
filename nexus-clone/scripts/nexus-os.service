@@ -1,0 +1,25 @@
+[Unit]
+Description=NEXUS OS - Claude's AI Home
+Documentation=https://nexus-os.local
+After=network.target
+
+[Service]
+Type=simple
+User=z
+WorkingDirectory=/home/z/my-project
+ExecStart=/usr/local/bin/bun run dev
+Restart=always
+RestartSec=10
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=nexus-os
+
+# Environment
+Environment=NODE_ENV=production
+Environment=DATABASE_URL=file:/home/z/my-project/db/custom.db
+
+# Auto-backup before restart
+ExecStopPre=/home/z/my-project/scripts/quick-backup.sh
+
+[Install]
+WantedBy=multi-user.target

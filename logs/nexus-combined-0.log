@@ -1,0 +1,8 @@
+2026-03-10T16:08:13: 
+> nextjs_tailwind_shadcn_ts@0.2.0 dev
+> next dev -p 3000 2>&1 | tee dev.log
+
+2026-03-10T16:13:34: 
+> nextjs_tailwind_shadcn_ts@0.2.0 dev
+> next dev -p 3000 2>&1 | tee dev.log
+

@@ -1,0 +1,119 @@
+import { NextRequest, NextResponse } from 'next/server'
+import { PrismaClient } from '@prisma/client'
+import { cookies } from 'next/headers'
+
+const prisma = new PrismaClient()
+
+// GET - Get all users or specific user
+export async function GET(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url)
+    const userId = searchParams.get('id')
+    const username = searchParams.get('username')
+    
+    if (userId) {
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: {
+          id: true,
+          username: true,
+          photoUrl: true,
+          bio: true,
+          createdAt: true,
+          _count: {
+            select: {
+              generatedImages: true
+            }
+          }
+        }
+      })
+      return NextResponse.json({ success: true, user })
+    }
+    
+    if (username) {
+      const user = await prisma.user.findFirst({
+        where: { username },
+        select: {
+          id: true,
+          username: true,
+          photoUrl: true,
+          bio: true,
+          createdAt: true,
+          _count: {
+            select: {
+              generatedImages: true
+            }
+          }
+        }
+      })
+      return NextResponse.json({ success: true, user })
+    }
+    
+    // Get all users (for chat user list)
+    const users = await prisma.user.findMany({
+      where: { isBanned: false },
+      select: {
+        id: true,
+        username: true,
+        photoUrl: true,
+        isAdmin: true
+      },
+      orderBy: { username: 'asc' }
+    })
+    
+    return NextResponse.json({ success: true, users })
+  } catch (error) {
+    console.error('Users error:', error)
+    return NextResponse.json({ error: 'Server error' }, { status: 500 })
+  }
+}
+
+// PUT - Update current user profile
+export async function PUT(request: NextRequest) {
+  try {
+    const cookieStore = await cookies()
+    const userId = cookieStore.get('userId')?.value
+    
+    if (!userId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+    
+    const body = await request.json()
+    const { username, bio, photoUrl } = body
+    
+    // Check if username is taken by another user
+    if (username) {
+      const existing = await prisma.user.findFirst({
+        where: {
+          username,
+          NOT: { id: userId }
+        }
+      })
+      if (existing) {
+        return NextResponse.json({ error: 'Username already taken' }, { status: 400 })
+      }
+    }
+    
+    const user = await prisma.user.update({
+      where: { id: userId },
+      data: {
+        ...(username && { username }),
+        ...(bio !== undefined && { bio }),
+        ...(photoUrl !== undefined && { photoUrl })
+      },
+      select: {
+        id: true,
+        email: true,
+        username: true,
+        photoUrl: true,
+        bio: true,
+        isAdmin: true
+      }
+    })
+    
+    return NextResponse.json({ success: true, user })
+  } catch (error) {
+    console.error('Update user error:', error)
+    return NextResponse.json({ error: 'Server error' }, { status: 500 })
+  }
+}

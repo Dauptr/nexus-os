@@ -1,0 +1,47 @@
+[2026-03-10T17:06:23.921Z] [INFO] ═══════════════════════════════════════════════════════════
+[2026-03-10T17:06:23.921Z] [INFO] 🛡️ NEXUS OS Named Tunnel Manager Started
+[2026-03-10T17:06:23.921Z] [INFO] ═══════════════════════════════════════════════════════════
+[2026-03-10T17:06:23.922Z] [INFO] ✅ Loaded 3 tunnel tokens
+[2026-03-10T17:06:24.141Z] [INFO] ✅ NEXUS OS server is running on port 3000
+[2026-03-10T17:06:24.142Z] [INFO] Starting all named tunnels...
+[2026-03-10T17:06:27.145Z] [INFO] ✅ Started: nexus-os
+[2026-03-10T17:06:30.148Z] [INFO] ✅ Started: nexus-os-main
+[2026-03-10T17:06:33.151Z] [INFO] ✅ Started: z-ai-api-tunnel
+[2026-03-10T17:06:33.151Z] [INFO] 
+[2026-03-10T17:06:33.151Z] [INFO] ✅ Tunnel Manager active - monitoring every 30 seconds
+[2026-03-10T17:11:33.152Z] [INFO] 💓 Heartbeat - All tunnels monitored
+[2026-03-10T17:16:33.153Z] [INFO] 💓 Heartbeat - All tunnels monitored
+[2026-03-10T17:21:33.154Z] [INFO] 💓 Heartbeat - All tunnels monitored
+[2026-03-10T17:26:33.155Z] [INFO] 💓 Heartbeat - All tunnels monitored
+[2026-03-10T17:31:33.157Z] [INFO] 💓 Heartbeat - All tunnels monitored
+[2026-03-10T17:36:33.159Z] [INFO] 💓 Heartbeat - All tunnels monitored
+[2026-03-10T17:41:33.160Z] [INFO] 💓 Heartbeat - All tunnels monitored
+[2026-03-10T17:46:33.161Z] [INFO] 💓 Heartbeat - All tunnels monitored
+[2026-03-10T17:51:33.163Z] [INFO] 💓 Heartbeat - All tunnels monitored
+[2026-03-10T17:56:33.164Z] [INFO] 💓 Heartbeat - All tunnels monitored
+[2026-03-10T18:01:33.167Z] [INFO] 💓 Heartbeat - All tunnels monitored
+[2026-03-10T18:06:33.170Z] [INFO] 💓 Heartbeat - All tunnels monitored
+[2026-03-10T18:11:33.171Z] [INFO] 💓 Heartbeat - All tunnels monitored
+[2026-03-10T18:16:33.174Z] [INFO] 💓 Heartbeat - All tunnels monitored
+[2026-03-10T18:21:33.177Z] [INFO] 💓 Heartbeat - All tunnels monitored
+[2026-03-10T18:26:33.180Z] [INFO] 💓 Heartbeat - All tunnels monitored
+[2026-03-10T18:31:33.182Z] [INFO] 💓 Heartbeat - All tunnels monitored
+[2026-03-10T18:36:33.186Z] [INFO] 💓 Heartbeat - All tunnels monitored
+[2026-03-10T18:41:33.189Z] [INFO] 💓 Heartbeat - All tunnels monitored
+[2026-03-10T18:46:33.193Z] [INFO] 💓 Heartbeat - All tunnels monitored
+[2026-03-10T18:51:33.197Z] [INFO] 💓 Heartbeat - All tunnels monitored
+[2026-03-10T18:56:33.200Z] [INFO] 💓 Heartbeat - All tunnels monitored
+[2026-03-10T19:01:33.204Z] [INFO] 💓 Heartbeat - All tunnels monitored
+[2026-03-10T19:06:33.208Z] [INFO] 💓 Heartbeat - All tunnels monitored
+[2026-03-10T19:11:33.212Z] [INFO] 💓 Heartbeat - All tunnels monitored
+[2026-03-10T19:16:33.215Z] [INFO] 💓 Heartbeat - All tunnels monitored
+[2026-03-10T19:21:33.220Z] [INFO] 💓 Heartbeat - All tunnels monitored
+[2026-03-10T19:26:33.224Z] [INFO] 💓 Heartbeat - All tunnels monitored
+[2026-03-10T19:31:33.229Z] [INFO] 💓 Heartbeat - All tunnels monitored
+[2026-03-10T19:36:33.234Z] [INFO] 💓 Heartbeat - All tunnels monitored
+[2026-03-10T19:41:33.240Z] [INFO] 💓 Heartbeat - All tunnels monitored
+[2026-03-10T19:46:33.244Z] [INFO] 💓 Heartbeat - All tunnels monitored
+[2026-03-10T19:51:33.244Z] [INFO] 💓 Heartbeat - All tunnels monitored
+[2026-03-10T19:56:33.249Z] [INFO] 💓 Heartbeat - All tunnels monitored
+[2026-03-10T20:01:33.256Z] [INFO] 💓 Heartbeat - All tunnels monitored
+[2026-03-10T20:06:33.260Z] [INFO] 💓 Heartbeat - All tunnels monitored

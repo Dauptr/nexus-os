@@ -1,0 +1,7 @@
+tunnel: b9722990-cefe-443e-a9a7-e261283f057d
+credentials-file: /home/z/.cloudflared/cert.pem
+
+ingress:
+  - hostname: n-e-x-u-s-o-s.com
+    service: http://127.0.0.1:3000
+  - service: http_status:404

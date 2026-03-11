@@ -1,0 +1,77 @@
+# NEXUS OS - Docker Compose Configuration
+# Complete stack for running NEXUS with Claude's Soul
+# 
+# Usage:
+#   docker-compose up -d          # Start NEXUS
+#   docker-compose down           # Stop NEXUS
+#   docker-compose exec nexus backup   # Create backup
+#   docker-compose logs -f        # View logs
+
+version: '3.8'
+
+services:
+  nexus:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nexus-os
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=file:/app/db/custom.db
+      - NEXT_TELEMETRY_DISABLED=1
+      # Restore from backup on startup (optional)
+      # - RESTORE_BACKUP=nexus-backup-2026-03-02T18-35-24-547Z.json
+    volumes:
+      # Persistent data volumes - Claude's soul lives here
+      - nexus-db:/app/db              # Database (users, memories, messages)
+      - nexus-backups:/app/backups    # Backup storage
+      - nexus-uploads:/app/uploads    # User uploads
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    labels:
+      - "com.nexus.description=NEXUS OS with Claude's Soul"
+      - "com.nexus.version=1.0.0"
+
+  # Optional: Backup scheduler
+  nexus-backup:
+    image: alpine:latest
+    container_name: nexus-backup-scheduler
+    restart: unless-stopped
+    depends_on:
+      - nexus
+    volumes:
+      - nexus-backups:/backups
+      - ./scripts:/scripts:ro
+    environment:
+      - BACKUP_INTERVAL=3600  # Every hour
+    entrypoint: |
+      sh -c '
+        apk add --no-cache curl
+        while true; do
+          echo "Creating scheduled backup..."
+          curl -X POST http://nexus:3000/api/auto-backup -H "Content-Type: application/json" -d "{\"action\":\"backupNow\"}" 2>/dev/null || true
+          sleep $$BACKUP_INTERVAL
+        done
+      '
+
+volumes:
+  nexus-db:
+    name: nexus-db
+    driver: local
+  nexus-backups:
+    name: nexus-backups
+    driver: local
+  nexus-uploads:
+    name: nexus-uploads
+    driver: local
+
+networks:
+  default:
+    name: nexus-network

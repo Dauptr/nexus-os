@@ -1,0 +1,39 @@
+name: Keep Tunnel Alive
+
+on:
+  schedule:
+    # Check every 5 minutes
+    - cron: '*/5 * * * *'
+  workflow_dispatch: # Manual trigger
+
+jobs:
+  check-and-restart:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Tunnel Status
+        run: |
+          # Add your tunnel health check URL here
+          TUNNEL_URL="${{ secrets.TUNNEL_URL }}"
+          
+          if [ -n "$TUNNEL_URL" ]; then
+            RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" "$TUNNEL_URL" || echo "000")
+            
+            if [ "$RESPONSE" != "200" ]; then
+              echo "::warning::Tunnel appears to be down!"
+              # Could trigger a notification here
+            else
+              echo "Tunnel is healthy!"
+            fi
+          else
+            echo "No tunnel URL configured"
+          fi
+
+  notify-on-down:
+    runs-on: ubuntu-latest
+    needs: check-and-restart
+    if: failure()
+    steps:
+      - name: Send Notification
+        run: |
+          echo "Tunnel is down! Manual intervention needed."
+          # Could integrate with Discord, Slack, Email, etc.

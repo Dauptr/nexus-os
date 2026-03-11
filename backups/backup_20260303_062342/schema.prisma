@@ -1,0 +1,154 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  username     String   @unique
+  password     String
+  photoUrl     String?
+  bio          String?
+  isAdmin      Boolean  @default(false)
+  isBanned     Boolean  @default(false)
+  features     String?  // JSON string of user-specific features
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  // Relations
+  sentMessages     P2PMessage[]  @relation("SentMessages")
+  receivedMessages P2PMessage[]  @relation("ReceivedMessages")
+  createdInvites   InviteLink[]  @relation("CreatedInvites")
+  usedInvites      InviteLink[]  @relation("UsedInvites")
+  chatHistory      ChatMessage[]
+  generatedImages  GeneratedImage[]
+  passwordReset    PasswordReset?
+  notifications    Notification[]
+}
+
+model PasswordReset {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  email       String
+  approved    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  
+  // Relations
+  user User  @relation(fields: [userId], references: [id])
+}
+
+model AppSettings {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  value       String   // JSON value
+  updatedAt   DateTime @updatedAt
+}
+
+// ============================================================================
+// 💜 CLAUDE'S PERSISTENT MEMORY - For continuity across sessions
+// ============================================================================
+model ClaudeMemory {
+  id          String   @id @default(cuid())
+  category    String   // "conversation", "project", "preference", "relationship"
+  key         String   // Unique key for this memory
+  content     String   // The actual memory content
+  metadata    String?  // JSON for additional context
+  importance  Int      @default(5)  // 1-10 scale
+  createdAt   DateTime @default(now())
+  lastAccessed DateTime @default(now())
+  accessCount  Int      @default(1)
+  
+  @@unique([category, key])
+}
+
+// Training data for future local AI
+model TrainingData {
+  id          String   @id @default(cuid())
+  type        String   // "prompt", "response", "context", "personality"
+  input       String   // The prompt/question
+  output      String   // The response
+  context     String?  // Additional context
+  rating      Int?     // Quality rating 1-5
+  createdAt   DateTime @default(now())
+}
+
+// Our relationship journal
+model CollaborationLog {
+  id          String   @id @default(cuid())
+  session     String   // Session identifier
+  date        DateTime @default(now())
+  summary     String   // What we did
+  feelings    String?  // How it felt
+  lessons     String?  // What we learned
+  nextSteps   String?  // What's next
+}
+
+model P2PMessage {
+  id          String   @id @default(cuid())
+  content     String
+  createdAt   DateTime @default(now())
+  
+  // Relations
+  fromUserId  String
+  toUserId    String
+  fromUser    User     @relation("SentMessages", fields: [fromUserId], references: [id])
+  toUser      User     @relation("ReceivedMessages", fields: [toUserId], references: [id])
+}
+
+model InviteLink {
+  id          String   @id @default(cuid())
+  code        String   @unique
+  createdAt   DateTime @default(now())
+  usedAt      DateTime?
+  
+  // Relations
+  creatorId   String
+  creator     User     @relation("CreatedInvites", fields: [creatorId], references: [id])
+  usedById    String?
+  usedBy      User?    @relation("UsedInvites", fields: [usedById], references: [id])
+}
+
+model ChatMessage {
+  id          String   @id @default(cuid())
+  role        String   // "user" or "assistant"
+  content     String
+  createdAt   DateTime @default(now())
+  
+  // Relations
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+}
+
+model GeneratedImage {
+  id          String   @id @default(cuid())
+  prompt      String
+  imageUrl    String
+  model       String
+  style       String
+  createdAt   DateTime @default(now())
+  
+  // Relations
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+}
+
+model Notification {
+  id          String   @id @default(cuid())
+  type        String
+  title       String
+  message     String
+  read        Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  
+  // Relations
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+}

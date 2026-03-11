@@ -1,0 +1,20 @@
+{
+  "started": "2026-03-10T17:06:23.920Z",
+  "tunnels": {
+    "nexus-os": {
+      "pid": 8705,
+      "started": "2026-03-10T17:06:24.144Z",
+      "status": "starting"
+    },
+    "nexus-os-main": {
+      "pid": 8714,
+      "started": "2026-03-10T17:06:27.147Z",
+      "status": "starting"
+    },
+    "z-ai-api-tunnel": {
+      "pid": 8723,
+      "started": "2026-03-10T17:06:30.150Z",
+      "status": "starting"
+    }
+  }
+}

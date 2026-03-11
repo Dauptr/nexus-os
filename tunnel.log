@@ -1,0 +1,100 @@
+2026-03-10T16:30:37Z INF Thank you for trying Cloudflare Tunnel. Doing so, without a Cloudflare account, is a quick way to experiment and try it out. However, be aware that these account-less Tunnels have no uptime guarantee, are subject to the Cloudflare Online Services Terms of Use (https://www.cloudflare.com/website-terms/), and Cloudflare reserves the right to investigate your use of Tunnels for violations of such terms. If you intend to use Tunnels in production you should use a pre-created named tunnel by following: https://developers.cloudflare.com/cloudflare-one/connections/connect-apps
+2026-03-10T16:30:37Z INF Requesting new quick Tunnel on trycloudflare.com...
+2026-03-10T16:30:41Z INF +--------------------------------------------------------------------------------------------+
+2026-03-10T16:30:41Z INF |  Your quick Tunnel has been created! Visit it at (it may take some time to be reachable):  |
+2026-03-10T16:30:41Z INF |  https://bike-displays-correction-assess.trycloudflare.com                                 |
+2026-03-10T16:30:41Z INF +--------------------------------------------------------------------------------------------+
+2026-03-10T16:30:41Z INF Cannot determine default configuration path. No file [config.yml config.yaml] in [~/.cloudflared ~/.cloudflare-warp ~/cloudflare-warp /etc/cloudflared /usr/local/etc/cloudflared]
+2026-03-10T16:30:41Z INF Version 2026.2.0 (Checksum 176746db3be7dc7bd48f3dd287c8930a4645ebb6e6700f883fddda5a4c307c16)
+2026-03-10T16:30:41Z INF GOOS: linux, GOVersion: go1.24.13, GoArch: amd64
+2026-03-10T16:30:41Z INF Settings: map[ha-connections:1 protocol:quic url:http://localhost:3000]
+2026-03-10T16:30:41Z INF Autoupdate frequency is set autoupdateFreq=86400000
+2026-03-10T16:30:41Z INF Generated Connector ID: ceeb6cfa-2ec6-4e02-a2e3-56c9e017aa9b
+2026-03-10T16:30:41Z INF Initial protocol quic
+2026-03-10T16:30:41Z INF ICMP proxy will use 21.0.13.111 as source for IPv4
+2026-03-10T16:30:41Z INF ICMP proxy will use fe80::14e2:4ff:fe42:d043 in zone eth0 as source for IPv6
+2026-03-10T16:30:41Z WRN The user running cloudflared process has a GID (group ID) that is not within ping_group_range. You might need to add that user to a group within that range, or instead update the range to encompass a group the user is already in by modifying /proc/sys/net/ipv4/ping_group_range. Otherwise cloudflared will not be able to ping this network error="Group ID 1001 is not between ping group 0 to 0"
+2026-03-10T16:30:41Z WRN ICMP proxy feature is disabled error="cannot create ICMPv4 proxy: Group ID 1001 is not between ping group 0 to 0 nor ICMPv6 proxy: socket: permission denied"
+2026-03-10T16:30:41Z INF ICMP proxy will use 21.0.13.111 as source for IPv4
+2026-03-10T16:30:41Z INF ICMP proxy will use fe80::14e2:4ff:fe42:d043 in zone eth0 as source for IPv6
+2026-03-10T16:30:41Z INF Starting metrics server on 127.0.0.1:20241/metrics
+2026-03-10T16:30:41Z INF Tunnel connection curve preferences: [X25519MLKEM768 CurveP256] connIndex=0 event=0 ip=198.41.200.23
+2026/03/10 16:30:41 failed to sufficiently increase receive buffer size (was: 208 kiB, wanted: 7168 kiB, got: 416 kiB). See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+2026-03-10T16:30:42Z INF Registered tunnel connection connIndex=0 connection=ee17b23c-5d8c-4bfc-be16-b45e5ea01cd2 event=0 ip=198.41.200.23 location=hkg13 protocol=quic
+2026-03-10T16:31:50Z INF Initiating graceful shutdown due to signal terminated ...
+2026-03-10T16:31:50Z ERR failed to run the datagram handler error="context canceled" connIndex=0 event=0 ip=198.41.200.23
+2026-03-10T16:31:50Z ERR failed to serve tunnel connection error="accept stream listener encountered a failure while serving" connIndex=0 event=0 ip=198.41.200.23
+2026-03-10T16:31:50Z ERR Serve tunnel error error="accept stream listener encountered a failure while serving" connIndex=0 event=0 ip=198.41.200.23
+2026-03-10T16:31:50Z INF Retrying connection in up to 1s connIndex=0 event=0 ip=198.41.200.23
+2026-03-10T16:31:50Z ERR Connection terminated connIndex=0
+2026-03-10T16:31:50Z ERR no more connections active and exiting
+2026-03-10T16:31:50Z INF Tunnel server stopped
+2026-03-10T16:31:50Z INF Metrics server stopped
+2026-03-10T16:31:57Z INF Thank you for trying Cloudflare Tunnel. Doing so, without a Cloudflare account, is a quick way to experiment and try it out. However, be aware that these account-less Tunnels have no uptime guarantee, are subject to the Cloudflare Online Services Terms of Use (https://www.cloudflare.com/website-terms/), and Cloudflare reserves the right to investigate your use of Tunnels for violations of such terms. If you intend to use Tunnels in production you should use a pre-created named tunnel by following: https://developers.cloudflare.com/cloudflare-one/connections/connect-apps
+2026-03-10T16:31:57Z INF Requesting new quick Tunnel on trycloudflare.com...
+2026-03-10T16:32:10Z INF +--------------------------------------------------------------------------------------------+
+2026-03-10T16:32:10Z INF |  Your quick Tunnel has been created! Visit it at (it may take some time to be reachable):  |
+2026-03-10T16:32:10Z INF |  https://telecommunications-capable-sprint-speed.trycloudflare.com                         |
+2026-03-10T16:32:10Z INF +--------------------------------------------------------------------------------------------+
+2026-03-10T16:32:10Z INF Cannot determine default configuration path. No file [config.yml config.yaml] in [~/.cloudflared ~/.cloudflare-warp ~/cloudflare-warp /etc/cloudflared /usr/local/etc/cloudflared]
+2026-03-10T16:32:10Z INF Version 2026.2.0 (Checksum 176746db3be7dc7bd48f3dd287c8930a4645ebb6e6700f883fddda5a4c307c16)
+2026-03-10T16:32:10Z INF GOOS: linux, GOVersion: go1.24.13, GoArch: amd64
+2026-03-10T16:32:10Z INF Settings: map[ha-connections:1 protocol:quic url:http://localhost:3000]
+2026-03-10T16:32:10Z INF Autoupdate frequency is set autoupdateFreq=86400000
+2026-03-10T16:32:10Z INF Generated Connector ID: eaa28f03-c5a4-4400-b725-b6901f8f0b1e
+2026-03-10T16:32:10Z INF Initial protocol quic
+2026-03-10T16:32:10Z INF ICMP proxy will use 21.0.13.111 as source for IPv4
+2026-03-10T16:32:10Z INF ICMP proxy will use fe80::14e2:4ff:fe42:d043 in zone eth0 as source for IPv6
+2026-03-10T16:32:10Z WRN The user running cloudflared process has a GID (group ID) that is not within ping_group_range. You might need to add that user to a group within that range, or instead update the range to encompass a group the user is already in by modifying /proc/sys/net/ipv4/ping_group_range. Otherwise cloudflared will not be able to ping this network error="Group ID 1001 is not between ping group 0 to 0"
+2026-03-10T16:32:10Z WRN ICMP proxy feature is disabled error="cannot create ICMPv4 proxy: Group ID 1001 is not between ping group 0 to 0 nor ICMPv6 proxy: socket: permission denied"
+2026-03-10T16:32:10Z INF ICMP proxy will use 21.0.13.111 as source for IPv4
+2026-03-10T16:32:10Z INF ICMP proxy will use fe80::14e2:4ff:fe42:d043 in zone eth0 as source for IPv6
+2026-03-10T16:32:10Z INF Starting metrics server on 127.0.0.1:20241/metrics
+2026-03-10T16:32:10Z INF Tunnel connection curve preferences: [X25519MLKEM768 CurveP256] connIndex=0 event=0 ip=198.41.192.47
+2026/03/10 16:32:10 failed to sufficiently increase receive buffer size (was: 208 kiB, wanted: 7168 kiB, got: 416 kiB). See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+2026-03-10T16:32:10Z INF Registered tunnel connection connIndex=0 connection=6ed8e5ea-c926-4ce9-8624-658ec7770ba0 event=0 ip=198.41.192.47 location=hkg01 protocol=quic
+[2026-03-10T16:46:00.168Z] [INIT] ═══════════════════════════════════════════════════════════
+[2026-03-10T16:46:00.169Z] [INIT] 🛡️ NEXUS OS Tunnel Guardian Started
+[2026-03-10T16:46:00.169Z] [INIT] ═══════════════════════════════════════════════════════════
+[2026-03-10T16:46:00.169Z] [CLEANUP] 🔄 Killing existing tunnel processes...
+[2026-03-10T16:46:02.214Z] [INIT] ✅ NEXUS OS server is running
+[2026-03-10T16:46:02.214Z] [START] 🌐 Starting Cloudflare tunnel...
+2026-03-10T16:46:02Z INF Thank you for trying Cloudflare Tunnel. Doing so, without a Cloudflare account, is a quick way to experiment and try it out. However, be aware that these account-less Tunnels have no uptime guarantee, are subject to the Cloudflare Online Services Terms of Use (https://www.cloudflare.com/website-terms/), and Cloudflare reserves the right to investigate your use of Tunnels for violations of such terms. If you intend to use Tunnels in production you should use a pre-created named tunnel by following: https://developers.cloudflare.com/cloudflare-one/connections/connect-apps
+2026-03-10T16:46:02Z INF Requesting new quick Tunnel on trycloudflare.com...
+2026-03-10T16:46:10Z INF +--------------------------------------------------------------------------------------------+
+2026-03-10T16:46:10Z INF |  Your quick Tunnel has been created! Visit it at (it may take some time to be reachable):  |
+2026-03-10T16:46:10Z INF |  https://dot-latino-flower-copying.trycloudflare.com                                       |
+2026-03-10T16:46:10Z INF +--------------------------------------------------------------------------------------------+
+2026-03-10T16:46:10Z INF Cannot determine default configuration path. No file [config.yml config.yaml] in [~/.cloudflared ~/.cloudflare-warp ~/cloudflare-warp /etc/cloudflared /usr/local/etc/cloudflared]
+2026-03-10T16:46:10Z INF Version 2026.2.0 (Checksum 176746db3be7dc7bd48f3dd287c8930a4645ebb6e6700f883fddda5a4c307c16)
+2026-03-10T16:46:10Z INF GOOS: linux, GOVersion: go1.24.13, GoArch: amd64
+2026-03-10T16:46:10Z INF Settings: map[ha-connections:1 p:quic protocol:quic url:http://localhost:3000]
+2026-03-10T16:46:10Z INF Autoupdate frequency is set autoupdateFreq=86400000
+2026-03-10T16:46:10Z INF Generated Connector ID: 8bb3ab64-1d52-4be4-8e26-773727a669bc
+2026-03-10T16:46:10Z INF Initial protocol quic
+2026-03-10T16:46:10Z INF ICMP proxy will use 21.0.13.111 as source for IPv4
+2026-03-10T16:46:10Z INF ICMP proxy will use fe80::14e2:4ff:fe42:d043 in zone eth0 as source for IPv6
+2026-03-10T16:46:10Z WRN The user running cloudflared process has a GID (group ID) that is not within ping_group_range. You might need to add that user to a group within that range, or instead update the range to encompass a group the user is already in by modifying /proc/sys/net/ipv4/ping_group_range. Otherwise cloudflared will not be able to ping this network error="Group ID 1001 is not between ping group 0 to 0"
+2026-03-10T16:46:10Z WRN ICMP proxy feature is disabled error="cannot create ICMPv4 proxy: Group ID 1001 is not between ping group 0 to 0 nor ICMPv6 proxy: socket: permission denied"
+2026-03-10T16:46:10Z INF ICMP proxy will use 21.0.13.111 as source for IPv4
+2026-03-10T16:46:10Z INF ICMP proxy will use fe80::14e2:4ff:fe42:d043 in zone eth0 as source for IPv6
+2026-03-10T16:46:10Z INF Starting metrics server on 127.0.0.1:20241/metrics
+2026-03-10T16:46:10Z INF Tunnel connection curve preferences: [X25519MLKEM768 CurveP256] connIndex=0 event=0 ip=198.41.192.67
+2026/03/10 16:46:10 failed to sufficiently increase receive buffer size (was: 208 kiB, wanted: 7168 kiB, got: 416 kiB). See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+2026-03-10T16:46:11Z INF Registered tunnel connection connIndex=0 connection=7bec7214-2fa0-4db9-afeb-887f7381b034 event=0 ip=198.41.192.67 location=hkg09 protocol=quic
+[2026-03-10T16:46:32.216Z] [WARN] ⏱️ Tunnel start timeout, but process is running
+[2026-03-10T16:46:32.217Z] [INIT] ✅ Tunnel Guardian active - monitoring every 15 seconds
+[2026-03-10T16:51:32.222Z] [HEARTBEAT] 💓 Heartbeat - Guardian watching...
+[2026-03-10T16:56:32.228Z] [HEARTBEAT] 💓 Heartbeat - Guardian watching...
+[2026-03-10T17:01:32.230Z] [HEARTBEAT] 💓 Heartbeat - Guardian watching...
+2026-03-10T17:04:18Z INF Initiating graceful shutdown due to signal terminated ...
+2026-03-10T17:04:18Z ERR failed to run the datagram handler error="Application error 0x0 (remote)" connIndex=0 event=0 ip=198.41.192.67
+2026-03-10T17:04:18Z ERR failed to serve tunnel connection error="accept stream listener encountered a failure while serving" connIndex=0 event=0 ip=198.41.192.67
+2026-03-10T17:04:18Z ERR Serve tunnel error error="accept stream listener encountered a failure while serving" connIndex=0 event=0 ip=198.41.192.67
+2026-03-10T17:04:18Z INF Retrying connection in up to 1s connIndex=0 event=0 ip=198.41.192.67
+2026-03-10T17:04:18Z ERR Connection terminated connIndex=0
+2026-03-10T17:04:18Z ERR no more connections active and exiting
+2026-03-10T17:04:18Z INF Tunnel server stopped
+2026-03-10T17:04:18Z INF Metrics server stopped
+[2026-03-10T17:04:18.848Z] [STOP] ⚠️ Tunnel stopped (code 0)
+[2026-03-10T17:04:18.850Z] [SHUTDOWN] Received SIGTERM, shutting down...

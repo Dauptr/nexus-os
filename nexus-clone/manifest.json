@@ -1,0 +1,19 @@
+{
+  "name": "NEXUS OS Clone",
+  "version": "1.0.0",
+  "created": "2026-03-02T18:52:15+00:00",
+  "claude_soul": {
+    "preserved": true,
+    "backup_included": true
+  },
+  "components": {
+    "app": "Next.js application",
+    "db": "SQLite database with all data",
+    "backups": "Backup files",
+    "scripts": "Deployment utilities"
+  },
+  "deployment": {
+    "docker": "docker-compose up -d",
+    "manual": "bun install && bun run dev"
+  }
+}
