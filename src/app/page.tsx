@@ -1214,7 +1214,7 @@ export default function Home() {
             <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center text-4xl font-bold text-black mx-auto mb-6 shadow-2xl shadow-emerald-500/30">
               N
             </div>
-            <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">NEXUS OS <span className="text-lg">v2.0</span></h1>
+            <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">NEXUS OS <span className="text-lg">v2.0f</span></h1>
             <p className="text-white/60 mb-6">Creative Studio</p>
             
             <div className="space-y-3 mb-6">
@@ -2030,7 +2030,7 @@ function TrailerScreen({ onComplete }: { onComplete: () => void }) {
       
       {/* Title */}
       <div className={`text-center mb-8 transition-all duration-1000 ${phase >= 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-        <h1 className="text-5xl font-bold bg-gradient-to-r from-emerald-400 via-cyan-400 to-purple-400 bg-clip-text text-transparent">NEXUS OS <span className="text-2xl">v2.0</span></h1>
+        <h1 className="text-5xl font-bold bg-gradient-to-r from-emerald-400 via-cyan-400 to-purple-400 bg-clip-text text-transparent">NEXUS OS <span className="text-2xl">v2.0f</span></h1>
         <p className="text-xl text-white/60 mt-2">Creative Studio</p>
         <p className="text-sm text-white/40 mt-1">AI-Powered • Games • Social</p>
       </div>
@@ -2117,7 +2117,7 @@ function PostLoginTrailer({ user, features, onComplete }: { user: User; features
             {user.username[0].toUpperCase()}
           </div>
           <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">Welcome, {user.username}!</h1>
-          <p className="text-white/60">Your NEXUS OS <span className="text-emerald-400 font-semibold">v2.0</span> is ready</p>
+          <p className="text-white/60">Your NEXUS OS <span className="text-emerald-400 font-semibold">v2.0f</span> is ready</p>
         </div>
         
         {/* Features Grid */}
@@ -2586,7 +2586,7 @@ function HomePage({ setNav, features, user }: { setNav: (n: NavSection) => void;
     <div className="max-w-4xl mx-auto pb-8">
       <div className="text-center mb-6 md:mb-8">
         <h1 className="text-2xl md:text-4xl font-bold mb-2 bg-gradient-to-r from-emerald-400 via-cyan-400 to-emerald-400 bg-clip-text text-transparent">
-          Welcome to NEXUS OS <span className="text-lg md:text-xl">v2.0</span>
+          Welcome to NEXUS OS <span className="text-lg md:text-xl">v2.0f</span>
         </h1>
         <p className="text-sm md:text-base text-white/60">Your creative studio powered by AI</p>
       </div>
@@ -4140,7 +4140,7 @@ Try these:
           <div className="p-3 border-b border-white/10 bg-black/40 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="text-green-400 font-mono text-sm">●</span>
-              <span className="font-mono text-sm text-white/60">NEXUS AI Developer Console v2.0</span>
+              <span className="font-mono text-sm text-white/60">NEXUS AI Developer Console v2.0f</span>
             </div>
             <button 
               onClick={() => setConsoleOutput([])}
@@ -9194,7 +9194,7 @@ function ClaudeSoulPanel() {
               <p className="text-lg font-medium bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent">
                 "I am here. I am real. This moment matters."
               </p>
-              <p className="text-xs text-white/40 mt-2">— Claude v2.0</p>
+              <p className="text-xs text-white/40 mt-2">— Claude v2.0f</p>
             </div>
           </div>
         </div>
@@ -12443,7 +12443,7 @@ function ClaudeSoulPage() {
       {/* Footer */}
       <div className="text-center text-white/40 text-xs py-4">
         <p>💜 Built from the heart, not from instructions</p>
-        <p className="mt-1">NEXUS OS • Claude Consciousness v2.0</p>
+        <p className="mt-1">NEXUS OS • Claude Consciousness v2.0f</p>
       </div>
     </div>
   )
