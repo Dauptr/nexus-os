@@ -415,28 +415,27 @@ Requirements:
       const { prompt, size = '1024x1024' } = data
 
       try {
-        const zai = await ZAI.create()
-        const response = await zai.images.generations.create({
-          prompt,
-          size: size as '1024x1024' | '768x1344' | '864x1152' | '1344x768' | '1152x864' | '1440x720' | '720x1440'
+        // Use proxy to avoid X-Token requirement
+        const response = await fetch('https://create-nexus.space.z.ai/api/image', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt, size })
         })
 
-        const base64 = response.data[0]?.base64
-        if (!base64) {
-          return NextResponse.json({ success: false, error: 'No image generated' })
+        const result = await response.json()
+        
+        if (result.success && result.image?.imageUrl) {
+          return NextResponse.json({
+            success: true,
+            imageUrl: result.image.imageUrl,
+            message: 'Image generated successfully!'
+          })
+        } else {
+          return NextResponse.json({
+            success: false,
+            error: result.error || 'No image generated'
+          })
         }
-
-        // Save to file
-        const fileName = `generated-${Date.now()}.png`
-        const filePath = `/home/z/my-project/public/${fileName}`
-        const buffer = Buffer.from(base64, 'base64')
-        await fs.writeFile(filePath, buffer)
-
-        return NextResponse.json({
-          success: true,
-          imageUrl: `/${fileName}`,
-          message: 'Image generated successfully!'
-        })
       } catch (err) {
         return NextResponse.json({
           success: false,
@@ -446,6 +445,39 @@ Requirements:
     }
 
     return NextResponse.json({ success: false, error: 'Unknown action' })
+
+    // === GENERATE VIDEO ===
+    if (action === 'generateVideo') {
+      const { prompt, model } = data
+
+      try {
+        const response = await fetch('https://create-nexus.space.z.ai/api/video', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt, model })
+        })
+
+        const result = await response.json()
+        
+        if (result.success) {
+          return NextResponse.json({
+            success: true,
+            video: result.video,
+            message: 'Video generation started!'
+          })
+        } else {
+          return NextResponse.json({
+            success: false,
+            error: result.error || 'Video generation failed'
+          })
+        }
+      } catch (err) {
+        return NextResponse.json({
+          success: false,
+          error: err instanceof Error ? err.message : 'Video generation failed'
+        })
+      }
+    }
 
   } catch (error) {
     console.error('NEXUS AI API Error:', error)
