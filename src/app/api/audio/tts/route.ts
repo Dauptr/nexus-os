@@ -10,7 +10,11 @@ export async function POST(request: NextRequest) {
     const { input, text } = body;
     const textContent = input || text || '';
 
-    console.log('[TTS Proxy] Text:', textContent?.substring(0, 50));
+    console.log('[Audio TTS] Text:', textContent?.substring(0, 50));
+
+    if (!textContent) {
+      return NextResponse.json({ error: 'Text is required' }, { status: 400 });
+    }
 
     const response = await fetch(REMOTE_API, {
       method: 'POST',
@@ -22,7 +26,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(data);
 
   } catch (error: unknown) {
-    console.error('[TTS Proxy] Error:', error);
+    console.error('[Audio TTS] Error:', error);
     return NextResponse.json({ 
       error: error instanceof Error ? error.message : 'TTS failed' 
     }, { status: 500 });

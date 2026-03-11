@@ -9,7 +9,11 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { prompt, size = '1024x1024' } = body;
 
-    console.log('[Image Proxy] Prompt:', prompt?.substring(0, 50));
+    console.log('[Image Gen] Prompt:', prompt?.substring(0, 50));
+
+    if (!prompt) {
+      return NextResponse.json({ error: 'Prompt is required' }, { status: 400 });
+    }
 
     const response = await fetch(REMOTE_API, {
       method: 'POST',
@@ -21,7 +25,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(data);
 
   } catch (error: unknown) {
-    console.error('[Image Proxy] Error:', error);
+    console.error('[Image Gen] Error:', error);
     return NextResponse.json({ 
       error: error instanceof Error ? error.message : 'Image generation failed' 
     }, { status: 500 });
