@@ -22,6 +22,15 @@ export async function POST(request: NextRequest) {
     });
 
     const data = await response.json();
+    
+    // Return image URL directly in 'image' field for frontend compatibility
+    if (data.success && data.image?.imageUrl) {
+      return NextResponse.json({
+        success: true,
+        image: data.image.imageUrl
+      });
+    }
+    
     return NextResponse.json(data);
 
   } catch (error: unknown) {
