@@ -12910,14 +12910,17 @@ function CreateSpacePage() {
         })
       })
       const data = await res.json()
-      if (data.success) {
-        if (data.status === 'completed' && data.videoUrl) {
-          setGeneratedVideo(data.videoUrl)
+      if (data.success && data.video) {
+        const video = data.video
+        if (video.status === 'COMPLETED' && video.videoUrl) {
+          setGeneratedVideo(video.videoUrl)
           setVideoStatus('Video ready!')
-        } else if (data.taskId) {
+        } else if (video.taskId || video.status === 'PROCESSING') {
           // Poll for status
           setVideoStatus('Processing... This may take a few minutes.')
-          pollVideoStatus(data.taskId)
+          pollVideoStatus(video.taskId)
+        } else {
+          setVideoStatus('Video generation started: ' + (video.status || 'processing'))
         }
       } else {
         setVideoStatus('Error: ' + (data.error || 'Video generation failed'))
@@ -12934,14 +12937,17 @@ function CreateSpacePage() {
       try {
         const res = await fetch(`/api/video?taskId=${taskId}`)
         const data = await res.json()
-        if (data.status === 'completed' && data.videoUrl) {
-          setGeneratedVideo(data.videoUrl)
+        const video = data.video || data
+        if (video.status === 'COMPLETED' && video.videoUrl) {
+          setGeneratedVideo(video.videoUrl)
           setVideoStatus('Video ready!')
-        } else if (data.status === 'processing') {
+        } else if (video.status === 'PROCESSING' || video.status === 'processing') {
           setVideoStatus('Still processing...')
           setTimeout(poll, 5000)
-        } else if (data.status === 'failed') {
+        } else if (video.status === 'FAILED' || video.status === 'failed') {
           setVideoStatus('Video generation failed')
+        } else {
+          setVideoStatus('Status: ' + (video.status || 'unknown'))
         }
       } catch {
         setVideoStatus('Error checking video status')
@@ -12963,7 +12969,8 @@ function CreateSpacePage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           text: ttsText,
-          voice: ttsVoice
+          voice: ttsVoice,
+          language: ttsLanguage
         })
       })
       const data = await res.json()
