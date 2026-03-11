@@ -18,12 +18,46 @@ export async function POST(request: NextRequest) {
     });
 
     const data = await response.json();
+    
+    // Return standardized response
+    if (data.success || data.video) {
+      return NextResponse.json({
+        success: true,
+        video: data.video || data,
+        message: 'Video generation started!'
+      });
+    }
+    
     return NextResponse.json(data);
 
   } catch (error: unknown) {
     console.error('[Video] Error:', error);
     return NextResponse.json({ 
+      success: false,
       error: error instanceof Error ? error.message : 'Video generation failed' 
+    }, { status: 500 });
+  }
+}
+
+// Check video status
+export async function GET(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const taskId = searchParams.get('taskId');
+    
+    if (!taskId) {
+      return NextResponse.json({ error: 'taskId required' }, { status: 400 });
+    }
+
+    const response = await fetch(`${REMOTE_API}?taskId=${taskId}`);
+    const data = await response.json();
+    
+    return NextResponse.json(data);
+
+  } catch (error: unknown) {
+    console.error('[Video Status] Error:', error);
+    return NextResponse.json({ 
+      error: error instanceof Error ? error.message : 'Status check failed' 
     }, { status: 500 });
   }
 }

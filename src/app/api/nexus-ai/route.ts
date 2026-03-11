@@ -444,8 +444,6 @@ Requirements:
       }
     }
 
-    return NextResponse.json({ success: false, error: 'Unknown action' })
-
     // === GENERATE VIDEO ===
     if (action === 'generateVideo') {
       const { prompt, model } = data
@@ -478,6 +476,8 @@ Requirements:
         })
       }
     }
+
+    return NextResponse.json({ success: false, error: 'Unknown action' })
 
   } catch (error) {
     console.error('NEXUS AI API Error:', error)
