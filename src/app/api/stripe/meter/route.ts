@@ -1,13 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server'
-import Stripe from 'stripe'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2024-12-18.acacia',
-})
+// Lazy load Stripe only when needed
+function getStripe() {
+  const key = process.env.STRIPE_SECRET_KEY
+  if (!key) return null
+  const Stripe = require('stripe')
+  return new Stripe(key, { apiVersion: '2024-12-18.acacia' })
+}
 
 // Stripe Meter Event API - Track usage for billing
 export async function POST(request: NextRequest) {
   try {
+    const stripe = getStripe()
+    if (!stripe) {
+      return NextResponse.json({ 
+        success: true, 
+        message: 'Stripe not configured (demo mode)' 
+      })
+    }
+    
     const body = await request.json()
     const { customerId, eventName, value = 1, timestamp } = body
 

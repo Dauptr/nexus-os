@@ -7,6 +7,15 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   reactStrictMode: false,
+  allowedDevOrigins: [
+    'n-e-x-u-s-o-s.com',
+    'www.n-e-x-u-s-o-s.com',
+    '*.cloudflare.com',
+    '*.trycloudflare.com',
+    'https://n-e-x-u-s-o-s.com',
+    'https://www.n-e-x-u-s-o-s.com',
+    'create-nexus.space.z.ai',
+  ],
   images: {
     remotePatterns: [
       {
